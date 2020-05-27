@@ -6,10 +6,10 @@ BLEService accelerometer("38ac34a6-9f32-11ea-bb37-0242ac130002"); // Acceleromet
 
 // BLE LED Switch Characteristic - custom 128-bit UUID, read and writable by central
 BLEByteCharacteristic switchCharacteristic("19B10001-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite);
-BLECharacteristic accelerometerCharacteristic("38ac34a6-9f32-11ea-bb37-0242ac130002", BLERead | BLEWrite | BLENotify, 10);
+BLEStringCharacteristic accelerometerCharacteristic("38ac34a6-9f32-11ea-bb37-0242ac130002", BLERead | BLEWrite | BLENotify, 10);
 
 const int irPin = 2;
-char orientation[30] = { 0 }; //initializing array to zero
+char orientation[30] = {0}; //initializing array to zero
 
 void setup()
 {
@@ -81,7 +81,8 @@ void loop()
     BLEDevice central = BLE.central();
 
     // if a central is connected to peripheral:
-    if(central){
+    if (central)
+    {
 
       Serial.print("Connected to central: ");
       // print the central's MAC address:
@@ -89,8 +90,29 @@ void loop()
       //    digitalWrite(13, HIGH);
 
       // while the central is still connected to peripheral:
-      while (central.connected()){
-        accelerometerCharacteristic.writeValue(checkOrientation(x, y, z));
+      while (central.connected())
+      {
+
+        //accelerometerCharacteristic.value(checkOrientation(x, y, z));
+        if (IMU.accelerationAvailable())
+        {
+          IMU.readAcceleration(x, y, z);
+
+          if (y <= delta && y >= -delta)
+            strcpy(orientation, "flat");
+          else if (y > delta && y < 1 - delta)
+            strcpy(orientation, "tilted to the left");
+          else if (y >= 1 - delta)
+            strcpy(orientation, "left");
+          else if (y < -delta && y > delta - 1)
+            strcpy(orientation, "tilted to the right");
+          else
+            strcpy(orientation, "right");
+
+          accelerometerCharacteristic.writeValue(orientation);
+          accelerometerCharacteristic.readValue(orientation);
+        }
+
         // if the remote device wrote to the characteristic,
         // use the value to control the LED:
         if (switchCharacteristic.written())
@@ -107,32 +129,13 @@ void loop()
           }
         }
       }
-      else
-      {
-        BLE.disconnect();
-      }
+      //      }else{
+      //        BLE.disconnect();
+      //      }
 
       // when the central disconnects, print it out:
       Serial.print(("Disconnected from central: "));
       Serial.println(central.address());
     }
   }
-}
-
-String checkOrientation(float x, float y, float z){
-    if (IMU.accelerationAvailable()){
-    IMU.readAcceleration(x, y, z);
-
-    if (y <= delta && y >= -delta)
-      orientation = "flat"
-    else if (y > delta && y < 1 - delta)
-      orientation = "tilted to the left"
-    else if (y >= 1 - delta)
-      orientation = "left"
-    else if (y < -delta && y > delta - 1)
-      orientation = "tilted to the right"
-    else
-      orientation = "right"
-  }
-  return orientation;
 }
