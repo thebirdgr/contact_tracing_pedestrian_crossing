@@ -1,2 +1,2 @@
-#define SECRET_SSID ""
-#define SECRET_PASS ""
+#define SECRET_SSID "SINGTEL-CD58"
+#define SECRET_PASS "FWJ8QLuJ3L"
