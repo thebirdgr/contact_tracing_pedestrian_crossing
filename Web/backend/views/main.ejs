@@ -1,0 +1,12 @@
+<%- include('./partials/header.ejs') %>
+
+
+<% if(tempid) { %>
+<div id="tempid"><%= tempid[tempid.length - 1].tempid %></div>
+<% } %>
+
+<form action="/" method="POST">
+    <button>Generate New Temporary ID</button>
+</form>
+
+<%- include('./partials/footer.ejs')  %>
