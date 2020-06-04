@@ -16,12 +16,13 @@ app.get('/', function(req,res){
         if(err){
             console.log(err);
         }else{
-            res.render("main", {tempid: tempid});
+            // res.render("main", {tempid: tempid});
+            res.json(tempid[tempid.length - 1].tempid);
         }
     })
 });
 
-app.post('/', function(req, res){
+app.post('/ap', function(req, res){
     let tempid = {
         tempid: seedDB.randomString(84)
     }
