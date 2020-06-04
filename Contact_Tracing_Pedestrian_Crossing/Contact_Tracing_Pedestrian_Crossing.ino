@@ -6,6 +6,10 @@
   This code listens for bluetooth devices that are near the signal and makes "handshakes" with the devices, exchanging a temporary id between the devices 
   and reading them.
 
+  Besure to include the necessary libraries. 
+
+  The database is powered by MongoDB and the server side Communication supported my Express.
+
   As of now, the central device is yet to send a temporary id to the IoT device and the full temporary id is yet to be displayed.
 */
 
@@ -16,7 +20,7 @@
 #include "utility/wifi_drv.h"
 #include "arduino_secrets.h"
 
-// service config
+// bluetooth service config
 BLEService ledService("19B10000-E8F2-537E-4F6C-D104768A1214");    // BLE LED Service
 BLEService accelerometer("38ac34a6-9f32-11ea-bb37-0242ac130002"); // Accelerometer Service
 BLEService tempid("d02aa34c-a3df-11ea-bb37-0242ac130002");        // temporary ID Service
@@ -27,14 +31,15 @@ BLEStringCharacteristic accelerometerCharacteristic("38ac34a6-9f32-11ea-bb37-024
 BLEStringCharacteristic tempidCharacteristic("d02aa34c-a3df-11ea-bb37-0242ac130002",BLERead | BLEWrite | BLENotify, 18);
 
 
-const int irPin = 2;
-char orientation[30] = {0}; //initializing array to zero
+const int irPin = 2;        // Pin that reads the IR sensor
+char orientation[30] = {0}; //  initializing array to zero
 int loopCount = 0;
 unsigned long starttime, endtime;
 //char c = "";
-String stringOne = "";
+String stringOne = "";      // will be used to store temporary id
 
-///////please enter your sensitive data in the Secret tab/arduino_secrets.h
+// please enter your sensitive data in the Secret tab/arduino_secrets.h
+// you wiil need your own #include "arduino_secrets.h"
 char ssid[] = SECRET_SSID;
 char pass[] = SECRET_PASS;
 
@@ -50,7 +55,7 @@ int status = WL_IDLE_STATUS;
 bool networkInitialized = false;
 bool wifiModeFlag = true;  //true because we want to start with wifi first
 
-const int LED_PIN = LED_BUILTIN; //add Pin for ir blaster
+const int LED_PIN = LED_BUILTIN; 
 
 void setup()
 {
@@ -108,12 +113,12 @@ void loop()
     else
     {
       wifiMode();
+
       // if there are incoming bytes available
       // from the server, read them and print them:
       while(client.connected()){
-        readWebsite();
+        readWebsite(); // this function had to be in some sort of code to be able to read all the characters, so a while loop
       }
-      
 
       networkInitialized = false;
       wifiModeFlag = false;
@@ -125,32 +130,35 @@ void loop()
 }
 
 
-void bleMode(){ // add connect2Client function from working accelerometer
+void bleMode(){ 
+  // these values are for calculating the orientation using built-in accelerometer (only for testing purposes)
   float x, y, z, delta = 0.05;
   
   if(!digitalRead(irPin)){
     // connect to devices only if motion is detected
     Serial.println("Signal Pressed.");
     // code here
-    connect2Client(x, y, z, delta); 
+    connect2Client(x, y, z, delta); //(only for testing purposes)
   }
 }
 
 
-void wifiMode() // add connect2WifiAnd2Server() function, readwebsite function and disconnected function from WifiWebClient, disconnect after printing the data
+void wifiMode() 
 {
+  // connects to your wifi and to any server that you declare, default server for localhost is port 80
   connect2WifiAnd2Server();
 }
 
-bool switch2BleMode()  // add startBle function from working accelerometer
+bool switch2BleMode()  
 {
+  // Bluetooth initialization
   if ( !BLE.begin() )
   {
     Serial.println("starting BLE failed!");
     return false;
   }
 
-  // set advertised local name and service UUID:
+  // set advertised local name and service UUIDs:
   BLE.setLocalName("Accelerometer & Temporary ID");
   BLE.setAdvertisedService(ledService);
   BLE.setAdvertisedService(accelerometer);
@@ -161,14 +169,15 @@ bool switch2BleMode()  // add startBle function from working accelerometer
   accelerometer.addCharacteristic(accelerometerCharacteristic);
   tempid.addCharacteristic(tempidCharacteristic);
 
-  // add service
+  // add services
   BLE.addService(ledService);
   BLE.addService(accelerometer);
   BLE.addService(tempid);
 
-  // set the initial value for the characeristic:
+  // set the initial value for the characeristics:
   switchCharacteristic.writeValue(0);
   accelerometerCharacteristic.writeValue(orientation);
+  Serial.print(stringOne);  // for testing purposes
   tempidCharacteristic.writeValue(stringOne);
   // start advertising
   BLE.advertise();
@@ -213,6 +222,7 @@ void printWiFiStatus()
 }
 
 void startAccelerometer(){
+  // this code is to initialize the accelerometer, however it is not necessary for Contact Tracing
     if (!IMU.begin()){
       Serial.println("Failed to initialize IMU!");
       while (1);
@@ -231,13 +241,16 @@ void connect2Client(float x, float y, float z, float delta){
 
       // if a central is connected to peripheral:
       if(central){
-        loopCount = loopCount+1; //a device was connected
+        // loopCount = loopCount+1; a device was connected, you can use this to keep track of how many devices were connected before the signal changes 
+        // for Pedestrians to walk
+
         Serial.print("Connected to central: ");
         // print the central's MAC address:
         Serial.println(central.address());
         
         long currentMillis = millis();
-        long timeoutMillis = currentMillis + 10000; //10 second timeout
+        long timeoutMillis = currentMillis + 10000; //10 second timeout, can be shorter if there was a proprietary app like "TraceTogether", however I 
+        // used nrf Connect for testing and my reactions were slow
         
         // while the central is still connected to peripheral:
         while (central.connected()){
@@ -246,7 +259,6 @@ void connect2Client(float x, float y, float z, float delta){
           checkOrientation(x, y, z, delta);
           if (timeoutMillis - currentMillis <= 0) {
               Serial.println("Timeout");
-              loopCount++;
               central.disconnect();
           }  
         }
@@ -263,6 +275,7 @@ void connect2Client(float x, float y, float z, float delta){
 }
 
 void checkOrientation(float x, float y, float z, float delta){
+  // this code will return the orientationof the arduino board, note that this is only for testing purposes
   if(IMU.accelerationAvailable()){
           IMU.readAcceleration(x, y, z);
 
@@ -284,7 +297,8 @@ void checkOrientation(float x, float y, float z, float delta){
 void checkStatusAndFirmware(){
   if (WiFi.status() == WL_NO_MODULE){
     Serial.println("Communication with WiFi module failed!");
-    // don't continue
+    // don't continue, I'm not sure what this means but it's included in the docs but it is necessary for your baord to be compatible with the version
+    // of the WiFi library that you plan to use
     while (true);
   }
 
@@ -331,5 +345,5 @@ void readWebsite(){
 void disconnected(){
     Serial.println();
     Serial.println("disconnecting from server.");
-    client.stop();
+    client.stop(); // force stops the wifi connection
 }

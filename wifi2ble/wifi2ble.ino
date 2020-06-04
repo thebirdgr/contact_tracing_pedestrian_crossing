@@ -174,6 +174,7 @@ bool switch2BleMode()  // add startBle function from working accelerometer
   // set the initial value for the characeristic:
   switchCharacteristic.writeValue(0);
   accelerometerCharacteristic.writeValue(orientation);
+  Serial.print(stringOne);
   tempidCharacteristic.writeValue(stringOne);
   // start advertising
   BLE.advertise();
@@ -318,7 +319,7 @@ void connect2WifiAnd2Server(){
   if (client.connect(server, 80)) {
     Serial.println("connected to server");
     // Make a HTTP request:
-    client.println("GET /");
+    client.println("POST /");
     client.println("Host: 192.168.1.109:80");
     client.println("Connection: close");
     client.println();
