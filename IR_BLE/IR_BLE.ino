@@ -65,8 +65,7 @@ void setup()
   Serial.println("BLE LED Peripheral");
 }
 
-void loop()
-{
+void loop(){
   float x, y, z, delta = 0.05;
 
   if (digitalRead(irPin))
