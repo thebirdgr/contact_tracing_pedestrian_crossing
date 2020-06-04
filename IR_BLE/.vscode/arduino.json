@@ -1,5 +1,0 @@
-{
-    "port": "/dev/cu.usbmodem143401",
-    "board": "arduino:samd:nano_33_iot",
-    "sketch": "IR_BLE.ino"
-}
