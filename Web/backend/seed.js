@@ -1,6 +1,10 @@
 var mongoose = require("mongoose");
+
+// include the schema
 const Tempid = require('./models/tempid');
 
+// declaring a function to generate a random alpha numeric string
+// doesn't have quotations to prevent crashing
 function randomString(length) {
     var result = '';
     var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~`!@#$%^&*()_+-={}[]:;\<>?,./|\\'
@@ -8,17 +12,17 @@ function randomString(length) {
     return result;
 }
 
-// doesn't have quotations to prevent crashing
+
 // const alphnum = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~`!@#$%^&*()_+-={}[]:;\<>?,./|\\'
 
-//Seed data jHO^i%UA.~]wrZM_ap'l)&T64q&09P0@{Z53jqb2v3LxlPu5)!K@_f996p8NOjrZ;]guGoc!TrGyaJ00Hp'I
+//Seed data 
 data = [
     {
         tempid: randomString(84)
     }
 ]
 
-
+// function that seeds the database with the data available
 function seed() {
     data.forEach(tempid => {
         Tempid.create(tempid, (err, tempid) => {
@@ -37,7 +41,7 @@ function seed() {
 
 
 // function seed(){
-//     //remove the temp id
+    //remove the temp id
 //     Tempid.remove({}, (err) => {
 //         if(err){
 //             console.log(err);
@@ -56,6 +60,8 @@ function seed() {
 //     })
 // }
 
+
+// eporting both function seed and random string
 module.exports = {
     seed,
     randomString
