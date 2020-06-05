@@ -33,6 +33,23 @@ Here's the link to the TinkerCAD.
 (https://www.tinkercad.com/things/jpFZ34tKhTA-faucet-draft/editel)
 
 
+### Flaw
+
+ HTTP/1.1 200 OK
+ X-Powered-By: Express
+ Content-Type: text/html; charset=utf-8
+ Content-Length: 100
+ ETag: W/"64-i3GeS7+obc78q/I/9T2hLFCKBMM"
+ Date: Thu, 04 Jun 2020 06:01:07 GMT
+ Connection: close
+ 
+ When receiving the data from the website, I get this extra information along with the 84 characters. I'm not sure how to remove it to share only the tempid. I'm sure there's a better way to do it like directly talking to my server but I'm not sure how. If anyone can fix it, that'd be great! 
+
+ ### Suggestion
+
+ The primary focus of this device is to work with an app so that communication and transfer of data would be more seamless.  However, I'm not an app developer. So app developers can tinker with this to help 'harmonize' the ecosystem. 
+
+
 ### END
 
 The rest is pretty much software and should work right out of the box if you have the necessary software installed. I hope this project is helpful to anyone looking to contribute in a much more scaled and sophisticated way or even to hobbyists =).
