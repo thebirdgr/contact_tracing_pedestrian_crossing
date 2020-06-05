@@ -23,5 +23,15 @@ It's supposed to have a public health system develop the temporary id that is ne
 
 ### Electrical Connections
 
-The connections are not complicated. I've included an image of how the connections to the board and IR Sensor are to be made. 
+The connections are not complicated. I've included an image of how the connections to the board and IR Sensor are to be made.
 
+(https://github.com/thebirdgr/contact_tracing_pedestrian_crossing/blob/master/img/IRConnection.png)
+
+Here's the link to the TinkerCAD.
+
+(https://www.tinkercad.com/things/jpFZ34tKhTA-faucet-draft/editel)
+
+
+### END
+
+The rest is pretty much software and should work right out of the box if you have the necessary software installed. I hope this project is helpful to anyone looking to contribute in a much more scaled and sophisticated way or even to hobbyists =).
