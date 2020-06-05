@@ -25,7 +25,7 @@ It's supposed to have a public health system develop the temporary id that is ne
 
 The connections are not complicated. I've included an image of how the connections to the board and IR Sensor are to be made.
 
-![alt text](https://github.com/thebirdgr/contact_tracing_pedestrian_crossing/blob/master/img/IRConnection.png"Logo Title Text 1")
+(https://github.com/thebirdgr/contact_tracing_pedestrian_crossing/blob/master/img/IRConnection.png)
 
 Here's the link to the TinkerCAD.
 
