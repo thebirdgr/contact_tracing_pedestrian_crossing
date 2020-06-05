@@ -49,6 +49,8 @@ Here's the link to the TinkerCAD.
 
  The primary focus of this device is to work with an app so that communication and transfer of data would be more seamless.  However, I'm not an app developer. So app developers can tinker with this to help 'harmonize' the ecosystem. 
 
+ One more thing, since at least 5 people would be standing at a signal in a working district, it would be best to store atleast 5 tempids in the local IoT signal so as not to switch between wifi and bluetooth continuously or when unable to get internet connection. Arduino has EEPROM to store, but the process is much tedious for me. Hence, local tempid storage would need to be implemented as it is quite necessary.
+
 
 ### END
 
