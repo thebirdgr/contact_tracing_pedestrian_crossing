@@ -51,6 +51,17 @@ Here's the link to the TinkerCAD.
 
  One more thing, since at least 5 people would be standing at a signal in a working district, it would be best to store atleast 5 tempids in the local IoT signal so as not to switch between wifi and bluetooth continuously or when unable to get internet connection. Arduino has EEPROM to store, but the process is much tedious for me. Hence, local tempid storage would need to be implemented as it is quite necessary.
 
+### References
+
+Here are some sites I found code that assisted me in building the project:
+
+Switch between BLE and Wifi:
+
+(https://forum.arduino.cc/index.php?topic=657710.0)
+
+Accelerometer Orientation:
+
+https://maker.pro/arduino/tutorial/how-to-use-the-arduino-nano-33-bles-built-in-imu
 
 ### END
 
