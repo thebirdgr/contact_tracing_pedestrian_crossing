@@ -49,7 +49,7 @@ char pass[] = SECRET_PASS;
 // that you want to connect to (port 80 is default for HTTP):
 WiFiClient client;
 
-// numeric IP for my local server (no DNS)
+// numeric IP for my local server (no DNS) fill up 'x' values
 IPAddress server(xxx,xxx,xxx,xxx);  
 int status = WL_IDLE_STATUS;
 bool networkInitialized = false;
@@ -72,6 +72,7 @@ void setup()
   // 3-axis sensor initialization
   startAccelerometer();
 }
+
 
 void loop()
 {
@@ -117,7 +118,7 @@ void loop()
       // if there are incoming bytes available
       // from the server, read them and print them:
       while(client.connected()){
-        readWebsite(); // this function had to be in some sort of code to be able to read all the characters, so a while loop
+        readWebsite(); // this function had to be in some sort of loop to be able to read all the characters, so a while loop
       }
 
       networkInitialized = false;
