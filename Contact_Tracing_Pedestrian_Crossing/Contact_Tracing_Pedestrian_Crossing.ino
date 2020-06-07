@@ -25,35 +25,35 @@ BLEService ledService("19B10000-E8F2-537E-4F6C-D104768A1214");    // BLE LED Ser
 BLEService accelerometer("38ac34a6-9f32-11ea-bb37-0242ac130002"); // Accelerometer Service
 BLEService tempid("d02aa34c-a3df-11ea-bb37-0242ac130002");        // temporary ID Service
 
-// BLE LED Switch Characteristic - custom 128-bit UUID, readable, writable or notifiable by central
+// BLE LED Switch Chaaracteristic - custom 128-bit UUID, readable, writable or notifiable by central
 BLEByteCharacteristic switchCharacteristic("19B10001-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite);
 BLEStringCharacteristic accelerometerCharacteristic("38ac34a6-9f32-11ea-bb37-0242ac130002", BLERead | BLEWrite | BLENotify, 10);
 BLEStringCharacteristic tempidCharacteristic("d02aa34c-a3df-11ea-bb37-0242ac130002",BLERead | BLEWrite | BLENotify, 18);
 
 
 const int irPin = 2;        // Pin that reads the IR sensor
-char orientation[30] = {0}; //  initialising array to zero
+char orientation[30] = {0}; // initialize array to sero
 int loopCount = 0;
 unsigned long starttime, endtime;
 //char c = "";
-String stringOne = "";      // will be used to store temporary id
+String stringOne = "";      // used to store temporary id
 
-// please enter your sensitive data in the Secret tab/arduino_secrets.h
-// you wiil need your own #include "arduino_secrets.h"
+// enter your sensitive data in the Secret tab/arduino_secrets.h
+// you will need you own #include "arduino_secrets.h"
 char ssid[] = SECRET_SSID;
 char pass[] = SECRET_PASS;
 
 
-// Initialize the Ethernet client library
+//this initializes the Ethernet client library
 // with the IP address and port of the server
-// that you want to connect to (port 80 is default for HTTP):
+// that you want to connect to ( port 80 is default for HTTP)
 WiFiClient client;
 
-// numeric IP for my local server (no DNS) fill up 'x' values
+// numeric IP for my local server (no DNS), fill up 'x' values with your local server
 IPAddress server(xxx,xxx,xxx,xxx);  
 int status = WL_IDLE_STATUS;
 bool networkInitialized = false;
-bool wifiModeFlag = true;  //true because we want to start with wifi first
+bool wifiModeFlag = true;  // true because we want to start with wifi first
 
 const int LED_PIN = LED_BUILTIN; 
 
@@ -73,7 +73,7 @@ void setup()
   startAccelerometer();
 }
 
-
+// loop that switches between Wifi and BLE mode
 void loop()
 {
   if( !networkInitialized )
@@ -136,7 +136,7 @@ void bleMode(){
   float x, y, z, delta = 0.05;
   
   if(!digitalRead(irPin)){
-    // connect to devices only if motion is detected
+    // connects to devices only if motion is detected
     Serial.println("Signal Pressed.");
     // code here
     connect2Client(x, y, z, delta); //(only for testing purposes)
@@ -152,20 +152,20 @@ void wifiMode()
 
 bool switch2BleMode()  
 {
-  // Bluetooth initialization
+  // Bluutooth initialization
   if ( !BLE.begin() )
   {
     Serial.println("starting BLE failed!");
     return false;
   }
 
-  // set advertised local name and service UUIDs:
+  // set advertised local name and service UUIDs
   BLE.setLocalName("Accelerometer & Temporary ID");
   BLE.setAdvertisedService(ledService);
   BLE.setAdvertisedService(accelerometer);
   BLE.setAdvertisedService(tempid);
 
-  // add the characteristic to the service
+  // add Chaaracteristic to the service
   ledService.addCharacteristic(switchCharacteristic);
   accelerometer.addCharacteristic(accelerometerCharacteristic);
   tempid.addCharacteristic(tempidCharacteristic);
@@ -175,7 +175,7 @@ bool switch2BleMode()
   BLE.addService(accelerometer);
   BLE.addService(tempid);
 
-  // set the initial value for the characeristics:
+  // set the initial value for the characteristics
   switchCharacteristic.writeValue(0);
   accelerometerCharacteristic.writeValue(orientation);
   Serial.print(stringOne);  // for testing purposes
@@ -196,8 +196,8 @@ bool switch2WiFiMode()
 
   status = WL_IDLE_STATUS;
 
-  // Re-initialize the WiFi driver
-  // This is currently necessary to switch from BLE to WiFi
+  // Re-initialize the wifi driver
+  // this is currently necessary to switch from BLE to WiFi
   wiFiDrv.wifiDriverDeinit();
   wiFiDrv.wifiDriverInit();
 
@@ -242,29 +242,30 @@ void connect2Client(float x, float y, float z, float delta){
 
       // if a central is connected to peripheral:
       if(central){
-        // loopCount = loopCount+1; a device was connected, you can use this to keep track of how many devices were connected before the signal changes 
-        // for Pedestrians to walk
+        // loopCount = loopCount+1; a device was connected, you can use the loopCount to keep track of how many devices were connected before the signal changes for the pedestrians to walk
+
 
         Serial.print("Connected to central: ");
         // print the central's MAC address:
         Serial.println(central.address());
         
         long currentMillis = millis();
-        long timeoutMillis = currentMillis + 10000; //10 second timeout, can be shorter if there was a proprietary app like "TraceTogether", however I 
-        // used nrf Connect for testing and my reactions were slow
+        long timeoutMillis = currentMillis + 10000; // 10 second window for you to access the ble services in an app, however can be shorter if there was a proprietary app like "TraceTogether",
+        // I used Nrf connect to test
         
         // while the central is still connected to peripheral:
         while (central.connected()){
           currentMillis = millis();
           // calculate board orientation and then add it to accelerometer characteristic
           checkOrientation(x, y, z, delta);
+
           if (timeoutMillis - currentMillis <= 0) {
               Serial.println("Timeout");
               central.disconnect();
           }  
         }
 
-        // change flag to switch to wifi mode
+        // change flag to switch to Wifi mode
         networkInitialized = false;
         wifiModeFlag = true;
 
@@ -276,7 +277,7 @@ void connect2Client(float x, float y, float z, float delta){
 }
 
 void checkOrientation(float x, float y, float z, float delta){
-  // this code will return the orientationof the arduino board, note that this is only for testing purposes
+  // this code will return the orientation of the arduino board, note that this is only for testing purposes
   if(IMU.accelerationAvailable()){
           IMU.readAcceleration(x, y, z);
 
@@ -290,7 +291,7 @@ void checkOrientation(float x, float y, float z, float delta){
             strcpy(orientation, "tilted to the right");
           else
             strcpy(orientation, "right");
-
+          // writes value to the characteristic
           accelerometerCharacteristic.writeValue(orientation);
    }
 }
@@ -298,8 +299,7 @@ void checkOrientation(float x, float y, float z, float delta){
 void checkStatusAndFirmware(){
   if (WiFi.status() == WL_NO_MODULE){
     Serial.println("Communication with WiFi module failed!");
-    // don't continue, I'm not sure what this means but it's included in the docs but it is necessary for your baord to be compatible with the version
-    // of the WiFi library that you plan to use
+    // I'm not sure what this means but it's included in the docs but it's necessary for your board to be compatible with the version of the Wifi library you plan to use
     while (true);
   }
 
@@ -327,7 +327,7 @@ void connect2WifiAnd2Server(){
   // if you get a connection, report back via serial:
   if (client.connect(server, 80)) {
     Serial.println("connected to server");
-    // Make a HTTP request:
+    // Make a HTTP request
     client.println("GET /");
     client.println("Host: 192.168.1.109:80");
     client.println("Connection: close");
@@ -336,8 +336,9 @@ void connect2WifiAnd2Server(){
 }
 
 void readWebsite(){
+  // read byte by byte
   while (client.available()){
-    char c = client.read();
+    char c = client.read(); 
     stringOne = String(c).substring(0, 84); 
     Serial.print(stringOne);
   }
@@ -346,5 +347,5 @@ void readWebsite(){
 void disconnected(){
     Serial.println();
     Serial.println("disconnecting from server.");
-    client.stop(); // force stops the wifi connection
+    client.stop(); // force stops the Wifi connection
 }

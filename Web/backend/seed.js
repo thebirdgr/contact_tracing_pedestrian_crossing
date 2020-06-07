@@ -4,7 +4,7 @@ var mongoose = require("mongoose");
 const Tempid = require('./models/tempid');
 
 // declaring a function to generate a random alpha numeric string
-// doesn't have quotations to prevent crashing
+// this function doesn't include the quotation characters to prevent crashing, it would interfere the entire string
 function randomString(length) {
     var result = '';
     var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~`!@#$%^&*()_+-={}[]:;\<>?,./|\\'
@@ -12,26 +12,27 @@ function randomString(length) {
     return result;
 }
 
-
+// this is all the characters on the keyboard
 // const alphnum = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~`!@#$%^&*()_+-={}[]:;\<>?,./|\\'
 
-//Seed data 
+//Seed data, data array with object
 data = [
     {
         tempid: randomString(84)
     }
 ]
 
-// function that seeds the database with the data available
+// function that seeds the databse with the data array available, gets updated every time a device is connected, does not restart
 function seed() {
     data.forEach(tempid => {
+        // .create() is a mongoose function 
         Tempid.create(tempid, (err, tempid) => {
             if (err) {
                 console.log(err);
             } else {
                 console.log("Generating Temporary ID");
                 console.log(tempid);
-                tempid.save();
+                tempid.save(); // necessary to save the tempid that was created
                 console.log("ID generated");
             }
         })
@@ -41,7 +42,7 @@ function seed() {
 
 
 // function seed(){
-    //remove the temp id
+    //remove the temp ids
 //     Tempid.remove({}, (err) => {
 //         if(err){
 //             console.log(err);
@@ -61,7 +62,7 @@ function seed() {
 // }
 
 
-// eporting both function seed and random string
+// exporting both the seed and randomString functions so that they can be used in other files
 module.exports = {
     seed,
     randomString

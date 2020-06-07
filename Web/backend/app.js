@@ -24,7 +24,7 @@ app.get('/', function(req,res){
             console.log(err);
         }else{
             // this renders the main.ejs file, while passing tempid to the main file as "tempid"
-            // res.render("main", {tempid: tempid});
+            // res.render("main", {tempid: tempid}); 
             // this responds to the route as JSON and displays on site
             res.json(tempid[tempid.length - 1].tempid);
         }
