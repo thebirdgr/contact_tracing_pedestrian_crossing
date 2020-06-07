@@ -32,7 +32,7 @@ BLEStringCharacteristic tempidCharacteristic("d02aa34c-a3df-11ea-bb37-0242ac1300
 
 
 const int irPin = 2;        // Pin that reads the IR sensor
-char orientation[30] = {0}; //  initializing array to zero
+char orientation[30] = {0}; //  initialising array to zero
 int loopCount = 0;
 unsigned long starttime, endtime;
 //char c = "";
@@ -50,7 +50,7 @@ char pass[] = SECRET_PASS;
 WiFiClient client;
 
 // numeric IP for my local server (no DNS)
-IPAddress server(192,168,1,109);  
+IPAddress server(xxx,xxx,xxx,xxx);  
 int status = WL_IDLE_STATUS;
 bool networkInitialized = false;
 bool wifiModeFlag = true;  //true because we want to start with wifi first
